@@ -13,6 +13,27 @@ export default {
     }
   },
   methods:{
+    test(){
+      fetch("http://localhost:8888/graphql", {
+        "headers": {
+          "accept": "application/json, multipart/mixed",
+          "accept-language": "de-DE,de;q=0.9,en-US;q=0.8,en;q=0.7",
+          "content-type": "application/json",
+          "sec-ch-ua": "\"Chromium\";v=\"106\", \"Google Chrome\";v=\"106\", \"Not;A=Brand\";v=\"99\"",
+          "sec-ch-ua-mobile": "?0",
+          "sec-ch-ua-platform": "\"macOS\"",
+          "sec-fetch-dest": "empty",
+          "sec-fetch-mode": "cors",
+          "sec-fetch-site": "same-origin"
+        },
+        "referrer": "http://localhost:8888/graphiql",
+        "referrerPolicy": "strict-origin-when-cross-origin",
+        "body": "{\"query\":\"query{\\n  users{\\n    id\\n    name\\n  }\\n}\"}",
+        "method": "POST",
+        "mode": "cors",
+        "credentials": "include"
+      });
+    },
     getUsers(){
       const query = `
                    query{
@@ -67,7 +88,7 @@ export default {
   // }
 },
 mounted() {
-    this.getUsers()
+    this.test()
   }
 }
 </script>

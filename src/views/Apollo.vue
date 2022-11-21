@@ -32,7 +32,11 @@ export default {
         "method": "POST",
         "mode": "cors",
         "credentials": "include"
-      });
+      }).then(response => this.handleResponse(response))
+          .then(res => {
+            console.log("res ", res)
+          })
+          .catch(err => this.handleError(err));
     },
     getUsers(){
       const query = `

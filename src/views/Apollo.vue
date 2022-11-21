@@ -35,7 +35,7 @@ export default {
     },
     fetch(query, variables = null){
       const options = {
-        method: 'POST',
+        method: 'GET',
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',

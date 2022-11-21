@@ -15,7 +15,7 @@ export default {
   apollo: {
     categories: gql`{
           categories{
-          id
+          id,
           name
           }
       }`

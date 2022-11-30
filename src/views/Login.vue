@@ -87,7 +87,7 @@ export default {
 
 
     },
-    login(email){
+    login(){
       if (this.disabled){
         return
       }

@@ -11,21 +11,18 @@ import './assets/main.css'
 
 import {ApolloClient, ApolloLink, concat, HttpLink, InMemoryCache} from '@apollo/client/core'
 import { createApolloProvider } from '@vue/apollo-option'
+// import vue3GoogleLogin from 'vue3-google-login'
 
 
-
-const httpLink = new HttpLink({
-    // You should use an absolute URL here
+const httpLinkBackend = new HttpLink({
     uri: 'http://localhost:8888/graphql',
-
+})
+const httpLinkAni = new HttpLink({
+    uri: 'https://graphql.anilist.co/',
 })
 
 const authMiddleware = new ApolloLink((operation, forward) => {
-    // add the authorization to the headers
-    // const token = this.$root.token
-    // console.log("token: ", token)
     const token = localStorage.getItem('token');
-    // this.$root.user
     operation.setContext({
         headers: {
             authorization: token ? `Bearer ${token}` : "",
@@ -35,15 +32,25 @@ const authMiddleware = new ApolloLink((operation, forward) => {
 });
 
 // Create the apollo client
-const apolloClient = new ApolloClient({
-    link:  concat(authMiddleware, httpLink),
+const apolloClientBackend = new ApolloClient({
+    link:  concat(authMiddleware, httpLinkBackend),
+    cache: new InMemoryCache(),
+    connectToDevTools: true,
+})
+
+const apolloClientAni = new ApolloClient({
+    link:  httpLinkAni,
     cache: new InMemoryCache(),
     connectToDevTools: true,
 })
 
 // Create a provider
 const apolloProvider = createApolloProvider({
-    defaultClient: apolloClient,
+    clients: {
+        ani: apolloClientAni,
+        backend: apolloClientBackend,
+    },
+    defaultClient: apolloClientAni,
 })
 
 
@@ -53,4 +60,9 @@ app.use(createPinia())
 app.use(router)
 app.use(apolloProvider)
 app.use(VueApolloComponents)
+
+// app.use(vue3GoogleLogin, {
+//     clientId: '751477675292-ng83mgnceanrv2fe6s7k1m9253hsd9j0.apps.googleusercontent.com'
+// })
+
 app.mount('#app')

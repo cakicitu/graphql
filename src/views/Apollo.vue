@@ -1,66 +1,107 @@
 <template>
-<p>Hello, </p>
+  <ApolloQuery  :query="categoryQuery">
+    <template  v-slot="{ result: { data }, isLoading }">
+      <div v-if="isLoading">Loading...</div>
+      <div v-if="data" style="display: flex; flex-direction: column">
+        <span class="categories" @click="selectCategory('all')">All</span>
+        <span class="categories" @click="selectCategory('featured')">Featured</span>
+        <span
+            class="categories"
+           @click="selectCategory(category.id)"
+           v-for="category of data.categories" :key="category.id">
+          {{ category.name }}
+        </span>
+        <RouterLink to="/book/create">create</RouterLink>
+      </div>
+    </template>
+  </ApolloQuery>
+  <ApolloQuery  :query="selectedCategoryQuery"
+                :variables="{ id: selectedCategory }"
+    >
+    <template  v-slot="{ result: { data }, isLoading }">
+      <div v-if="isLoading">Loading...</div>
+      <div v-else-if="data" style="display: flex; flex-direction: column;
+      ">
+        <template v-if="selectedCategory == 'all'">
+          <div
+              style="border: 2px solid green;
+             padding: 12px;
+"
+              v-for="book in data.books" class="category" :key="book.id">
+            {{ book.id }}
+            <router-link :to="'/book/' + book.id">   {{ book.title }}</router-link>
+
+            {{ book.author }}
+          </div>
+        </template>
+        <template v-else-if="selectedCategory == 'featured'">
+          <div
+              style="border: 2px solid green;
+             padding: 12px;
+"
+              v-for="book in data.booksByFeatured" class="category" :key="book.id">
+            {{ book.id }}
+            <router-link :to="'/book/' + book.id">   {{ book.title }}</router-link>
+            {{ book.author }}
+          </div>
+        </template>
+        <template v-else>
+          <div
+              style="border: 2px solid green;
+             padding: 12px;
+"
+              v-for="book in data.category.books" class="category" :key="book.id">
+            {{ book.id }}
+            <router-link :to="'/book/' + book.id">   {{ book.title }}</router-link>
+
+            {{ book.author }}
+          </div>
+        </template>
+
+      </div>
+    </template>
+  </ApolloQuery>
+
 </template>
 
 <script>
-import {gql} from "@apollo/client/core";
+import categoryQuery from '/src/graphql/queries/Category'
+import bookQuery from '/src/graphql/queries/Book'
+import featuredBooksQuery from '/src/graphql/queries/featuredBooks'
+import books from '/src/graphql/queries/Books'
 
 export default {
+
   name: "Apollo",
   data(){
     return{
-      categories: []
+      categoryQuery,
+      bookQuery,
+      books,
+      featuredBooksQuery,
+      selectedCategory: 'all',
+      categories: [],
+      selectedBook: null
+    }
+  },
+  computed: {
+    selectedCategoryQuery(){
+      if (this.selectedCategory  === 'all'){
+        return this.books
+      }else if(this.selectedCategory  === 'featured'){
+        return this.featuredBooksQuery
+      }else {
+        return this.bookQuery
+      }
     }
   },
   methods:{
-    test(){
-      fetch("http://localhost:8888/graphql", {
-        "headers": {
-          "accept": "application/json, multipart/mixed",
-          "accept-language": "de-DE,de;q=0.9,en-US;q=0.8,en;q=0.7",
-          "content-type": "application/json",
-          "sec-ch-ua": "\"Chromium\";v=\"106\", \"Google Chrome\";v=\"106\", \"Not;A=Brand\";v=\"99\"",
-          "sec-ch-ua-mobile": "?0",
-          "sec-ch-ua-platform": "\"macOS\"",
-          "sec-fetch-dest": "empty",
-          "sec-fetch-mode": "cors",
-          "sec-fetch-site": "same-origin"
-        },
-        "referrer": "http://localhost:8888/graphiql",
-        "referrerPolicy": "strict-origin-when-cross-origin",
-        "body": "{\"query\":\"query{\\n  users{\\n    id\\n    name\\n  }\\n}\"}",
-        "method": "POST",
-        "mode": "cors",
-        "credentials": "include"
-      }).then(response => this.handleResponse(response))
-          .then(res => {
-            console.log("res ", res)
-          })
-          .catch(err => this.handleError(err));
-    },
-    getUsers(){
-      const query = `
-                   query{
-                    users{
-                      id
-                      name
-                   }
-              }
-              `;
-
-      let variables = {
-        // page: page ? page : 1,
-        // perPage: 15,
-        // sortBy: this.sortBy
-      };
-
-      this.fetch(query, variables).then(res => {
-        console.log("res ", res)
-      })
+    selectCategory(categoryId){
+      this.selectedCategory = categoryId
     },
     fetch(query, variables = null){
       const options = {
-        method: 'GET',
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
@@ -71,32 +112,23 @@ export default {
         })
       }
 
-      return fetch('http://localhost:8888/graphiql', options).then(response => this.handleResponse(response))
+      return fetch('http://localhost/graphql', options).then(res => res.json())
           .catch(err => this.handleError(err));
-    },
-    handleResponse(res){
-      return res.json().then(function (json) {
-        return res.ok ? json : Promise.reject(json);
-      });
     },
     handleError(err){
       console.log("err: ", err)
     },
-  // apollo: {
-  //   categories: gql`{
-  //         categories{
-  //         id,
-  //         name
-  //         }
-  //     }`
-  // }
 },
+  apollo: {
+    $client: 'a',
+  },
 mounted() {
-    this.test()
   }
 }
 </script>
 
 <style scoped>
-
+.categories{
+  cursor: pointer;
+}
 </style>

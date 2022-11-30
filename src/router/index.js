@@ -1,14 +1,28 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
 import Apollo from "../views/Apollo.vue";
+import Book from "../views/Book.vue";
+import Login from "../views/Login.vue";
+import Register from "../views/Register.vue";
+import Home from "../views/Home.vue";
+import createBook from "../views/createBook.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
-      name: 'home',
-      component: HomeView
+      name: 'Home',
+      component: Home
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: Login
+    },
+    {
+      path: '/register',
+      name: 'register',
+      component: Register
     },
     {
       path: '/apollo',
@@ -16,13 +30,16 @@ const router = createRouter({
       component: Apollo
     },
     {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/AboutView.vue')
-    }
+      path: '/book/:id',
+      name: 'book',
+      component: Book
+    },
+    {
+      path: '/book/create',
+      name: 'createBook',
+      component: createBook
+    },
+
   ]
 })
 

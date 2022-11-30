@@ -80,12 +80,10 @@ export default {
   },
   methods:{
     onSignIn(googleUser) {
-      var profile = googleUser.getBasicProfile();
+      const profile = googleUser.getBasicProfile();
       console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
       console.log('Name: ' + profile.getName());
       console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
-
-
     },
     login(){
       if (this.disabled){
@@ -110,6 +108,25 @@ export default {
         this.loading = false
         console.log("err: " ,err)
       })
+    }
+  },
+  beforeMount() {
+    const script = document.createElement('script');
+
+    document.head.appendChild(script);
+
+    console.log("loading script")
+  },
+  mounted() {
+      window.onload = function () {
+      google.accounts.id.initialize({
+        client_id: '751477675292-ng83mgnceanrv2fe6s7k1m9253hsd9j0.apps.googleusercontent.com'
+      });
+      google.accounts.id.prompt((notification) => {
+      if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+      // try next provider if OneTap is not displayed or skipped
+    }
+    });
     }
   }
 }

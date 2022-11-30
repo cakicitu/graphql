@@ -1,13 +1,4 @@
 <template>
-<!--    <html lang="en">-->
-<!--        <head>-->
-<!--          <meta name="google-signin-client_id" content="751477675292-ng83mgnceanrv2fe6s7k1m9253hsd9j0.apps.googleusercontent.com">-->
-<!--        </head>-->
-<!--        <body>-->
-<!--        <script src="https://apis.google.com/js/platform.js" async defer></script>-->
-<!--        <div class="g-signin2" data-onsuccess="onSignIn">test</div>-->
-<!--    </body>-->
-<!--  </html>-->
   <layout :nav="false">
     <form action="POST" id="login">
       <label class="title">Login</label>
@@ -25,10 +16,21 @@
               :success="passwordSuccess"
       ></TInput>
       <TButton style="margin-top: 20px" :dark="true" @click="login" :disabled="disabled" :loading="loading">Submit</TButton>
-<!--      <GoogleLogin :callback="callback()"/>-->
+      <div id="g_id_onload"
+           data-client_id="751477675292-ng83mgnceanrv2fe6s7k1m9253hsd9j0.apps.googleusercontent.com"
+           data-login_uri="https://lucent-paprenjak-d37454.netlify.app/"
+           data-auto_prompt="false">
+      </div>
+      <div class="g_id_signin"
+           data-type="standard"
+           data-size="large"
+           data-theme="outline"
+           data-text="sign_in_with"
+           data-shape="rectangular"
+           data-logo_alignment="left">
+      </div>
     </form>
   </layout>
-<!--  <div class="g-signin2" data-onsuccess="onSignIn">test</div>-->
 
 
 </template>
@@ -77,19 +79,15 @@ export default {
     }
   },
   methods:{
-    // callback (response) {
-    //   // This callback will be triggered when the user selects or login to
-    //   // his Google account from the popup
-    //   console.log("Handle the response", response)
-    // },
     onSignIn(googleUser) {
       var profile = googleUser.getBasicProfile();
       console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
       console.log('Name: ' + profile.getName());
-      console.log('Image URL: ' + profile.getImageUrl());
       console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+
+
     },
-    login(){
+    login(email){
       if (this.disabled){
         return
       }

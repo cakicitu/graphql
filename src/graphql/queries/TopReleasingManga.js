@@ -15,12 +15,12 @@ export default  gql`
             media(
                 status: RELEASING
                 type: ANIME
-                season: FALL,
-                seasonYear: 2022
             ){
                 id
                 title {
                     english
+                    native
+                    romaji
                 }
                 averageScore
                 coverImage{
@@ -31,10 +31,10 @@ export default  gql`
                     nodes{
                         timeUntilAiring
                         episode
-
                     }
                 }
                 trending
+                favourites
             }
         }
     }

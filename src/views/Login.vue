@@ -117,18 +117,6 @@ export default {
 
     console.log("loading script")
   },
-  mounted() {
-      window.onload = function () {
-      google.accounts.id.initialize({
-        client_id: '751477675292-ng83mgnceanrv2fe6s7k1m9253hsd9j0.apps.googleusercontent.com'
-      });
-      google.accounts.id.prompt((notification) => {
-      if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-      // try next provider if OneTap is not displayed or skipped
-    }
-    });
-    }
-  }
 }
 </script>
 

@@ -13,10 +13,8 @@ export default  gql`
                 hasNextPage
             }
             media(
-                status: RELEASING
-                type: ANIME
-                season: FALL,
-                seasonYear: 2022
+                type: MANGA
+                sort: POPULARITY_DESC,
             ){
                 id
                 title {
@@ -27,14 +25,9 @@ export default  gql`
                     medium
                 }
                 genres
-                airingSchedule{
-                    nodes{
-                        timeUntilAiring
-                        episode
-
-                    }
-                }
                 trending
+                status
+                chapters
             }
         }
     }

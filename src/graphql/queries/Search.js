@@ -1,10 +1,10 @@
 import gql from 'graphql-tag'
 
 export default  gql`
-    query($page: Int, $perPage: Int) {
+    query($search: String, $page: Int) {
         Page(
             page: $page,
-            perPage: $perPage,
+            perPage: 15,
         ){
             pageInfo{
                 total
@@ -13,14 +13,13 @@ export default  gql`
                 hasNextPage
             }
             media(
-                status: RELEASING
-                type: ANIME
-                season: FALL,
-                seasonYear: 2022
+                search: $search
             ){
                 id
                 title {
                     english
+                    native
+                    romaji
                 }
                 averageScore
                 coverImage{
@@ -31,10 +30,11 @@ export default  gql`
                     nodes{
                         timeUntilAiring
                         episode
-
                     }
                 }
                 trending
+                favourites
+                type
             }
         }
     }

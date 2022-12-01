@@ -1,12 +1,13 @@
 <template>
   <nav>
-    <RouterLink to="/">Home</RouterLink>
-<!--    <RouterLink to="/anime">Anime</RouterLink>-->
-<!--    <RouterLink to="/manga">Manga</RouterLink>-->
+    <RouterLink to="/" @click="resetState()">Home</RouterLink>
     <HoverDropdown :options="animeOptions"></HoverDropdown>
     <HoverDropdown :options="mangaOptions"></HoverDropdown>
     <RouterLink to="/forum">Forum</RouterLink>
-    <input class="search" type="text" placeholder="search">
+    <div class="searchArea">
+      <input class="search" type="text" placeholder="search" v-model="search" v-on:keyup.enter="submitSearch()">
+      <button class="searchButton"  @click="submitSearch()">Submit</button>
+    </div>
     <div class="space"></div>
     <TButton v-if="!$root.user" :dark="true" @click="$router.push('/login')">Login</TButton>
     <HoverDropdown v-if="$root.user"  :options="profileOptions" style="grid-column:  span 2;"></HoverDropdown>
@@ -18,11 +19,15 @@
 import TButton from "./TButton.vue";
 import Login from "../graphql/mutations/Login";
 import HoverDropdown from "./HoverDropdown.vue";
+import Search from "../graphql/queries/Search";
+import gql from "graphql-tag";
 export default {
   name: "Navigation",
   components: {HoverDropdown, TButton},
   data(){
     return{
+      Search,
+      search: '',
       animeOptions: {
         title: 'Anime',
         tabs: [
@@ -36,11 +41,17 @@ export default {
           },
           {
             tab: 'Top',
-            link: 'test'
+            link: '/list/topAnime',
+            function: () =>{
+              this.$router.push('/list/TopAnime')
+            }
           },
           {
-            tab: 'Trending',
-            link: 'test'
+            tab: 'Popular',
+            link: 'test',
+            function: () =>{
+              this.$router.push('/list/PopularAnime')
+            }
           },
         ]
       },
@@ -57,17 +68,37 @@ export default {
           },
           {
             tab: 'Top',
-            link: 'test'
+            link: 'test',
+            function: () =>{
+              this.$router.push('/list/TopManga')
+            }
           },
           {
-            tab: 'Trending',
-            link: 'test'
+            tab: 'Popular',
+            link: 'test',
+            function: () =>{
+              this.$router.push('/list/PopularManga')
+            }
           },
         ]
       }
     }
   },
   computed:{
+    // searchResult(){
+    //     let res = null
+    //     this.$apollo.query({
+    //       query: Search,
+    //       variables: {search: this.search},
+    //       client: 'ani'
+    //     }).then(res => {
+    //       console.log("SEARCH RESULT: ", res)
+    //       this.$emit('search', res.data.Page.media)
+    //        res = res.data.Page.media
+    //     })
+    //
+    //   return res
+    // },
     profileOptions(){
      return {
         title: 'Hello, ' + this.$root.user.user.name,
@@ -83,10 +114,17 @@ export default {
       }
     }
   },
+  methods:{
+    resetState(){
+      this.search = ''
+      this.$emit('reset')
+    },
+    submitSearch(){
+      this.$emit('setSearch', this.search)
+    }
+  },
   apollo: {
       $client: 'backend',
-  },
-  methods: {
   }
 }
 </script>
@@ -98,7 +136,7 @@ export default {
 nav {
   height: 41px;
   display: grid;
-  grid-template-columns: 80px 80px 80px 80px 300px 1fr 130px 130px;
+  grid-template-columns: 80px 80px 80px 80px 350px 1fr 130px 130px;
   grid-template-rows: auto;
   grid-template-areas:
     "home anime manga forum searchbar space login sign";
@@ -122,13 +160,29 @@ nav {
     border: 0;
   }
 
-  .search{
-    text-decoration: none;
-    border: none;
-    background: var(--primary);
-    border-radius: 7px;
-    padding: 8px 8px 8px 20px;
-    outline: none;
+  .searchArea{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    .search{
+      text-decoration: none;
+      border: none;
+      background: var(--primary);
+      border-radius: 7px;
+      padding: 8px 8px 8px 20px;
+      outline: none;
+    }
+    .searchButton{
+      margin-left: 10px;
+      text-decoration: none;
+      border: none;
+      background: var(--primary);
+      border-radius: 7px;
+      padding: 8px 8px 8px 8px;
+      outline: none;
+      cursor: pointer;
+    }
   }
 
   ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */

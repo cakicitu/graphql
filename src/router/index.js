@@ -3,6 +3,7 @@ import Apollo from "../views/Apollo.vue";
 import Book from "../views/Book.vue";
 import Login from "../views/Login.vue";
 import Register from "../views/Register.vue";
+import List from "../views/List.vue";
 import Home from "../views/Home.vue";
 import createBook from "../views/createBook.vue";
 
@@ -23,6 +24,11 @@ const router = createRouter({
       path: '/register',
       name: 'register',
       component: Register
+    },
+    {
+      path: '/list/:query',
+      name: 'list',
+      component: List
     },
     {
       path: '/apollo',
